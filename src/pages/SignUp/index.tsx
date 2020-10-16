@@ -1,9 +1,13 @@
+/* eslint-disable no-use-before-define */
+/* eslint-disable @typescript-eslint/ban-types */
+/* eslint-disable no-unused-expressions */
 import React, { useCallback, useRef } from 'react';
 import { FormHandles } from '@unform/core';
 import { FiArrowLeft, FiMail, FiUser, FiLock } from 'react-icons/fi';
-import getValidationErrors from '../../utils/getValidationErrors';
+
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
+import getValidationErrors from '../../utils/getValidationErrors';
 
 import logoImg from '../../assets/logo.svg';
 

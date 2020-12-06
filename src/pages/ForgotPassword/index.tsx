@@ -4,7 +4,7 @@
 /* eslint-disable no-unused-expressions */
 import React, { useRef, useCallback } from 'react';
 import { FormHandles } from '@unform/core';
-import { FiLogIn, FiMail, FiLock } from 'react-icons/fi';
+import { FiLogIn, FiMail } from 'react-icons/fi';
 import * as Yup from 'yup';
 import { Form } from '@unform/web';
 import { Link, useHistory } from 'react-router-dom';

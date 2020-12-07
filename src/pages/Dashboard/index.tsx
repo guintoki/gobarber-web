@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
 /* eslint-disable no-use-before-define */
-import React from 'react';
+import React, { useState } from 'react';
 import { FiPower, FiClock } from 'react-icons/fi';
 import {
   Container,
@@ -11,12 +11,15 @@ import {
   Schedule,
   Calendar,
   NextAppointment,
+  Section,
+  Appointment,
 } from './styles';
 import { useAuth } from '../../hooks/Auth';
 
 import logoImg from '../../assets/logo.svg';
 
 const Dashboard: React.FC = () => {
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const { signOut, user } = useAuth();
 
   return (
@@ -56,12 +59,65 @@ const Dashboard: React.FC = () => {
                 alt=""
               />
 
-              <strong></strong>
+              <strong>cleiton</strong>
               <span>
                 <FiClock />
               </span>
             </div>
           </NextAppointment>
+
+          <Section>
+            <strong>Manhã</strong>
+
+            <Appointment>
+              <span>
+                <FiClock />
+                9: 00
+              </span>
+
+              <div>
+                <img
+                  src="https://avatars2.githubusercontent.com/u/55093125?s=400&u=b241d3376c3c7ddaa21421eb4bcd255962486339&v=4"
+                  alt=""
+                />
+                <strong>cleiton</strong>
+              </div>
+            </Appointment>
+
+            <Appointment>
+              <span>
+                <FiClock />
+                9: 00
+              </span>
+
+              <div>
+                <img
+                  src="https://avatars2.githubusercontent.com/u/55093125?s=400&u=b241d3376c3c7ddaa21421eb4bcd255962486339&v=4"
+                  alt=""
+                />
+                <strong>cleiton</strong>
+              </div>
+            </Appointment>
+          </Section>
+
+          <Section>
+            <strong>Tarde</strong>
+
+            <Appointment>
+              <span>
+                <FiClock />
+                9: 00
+              </span>
+
+              <div>
+                <img
+                  src="https://avatars2.githubusercontent.com/u/55093125?s=400&u=b241d3376c3c7ddaa21421eb4bcd255962486339&v=4"
+                  alt=""
+                />
+                <strong>cleiton</strong>
+              </div>
+            </Appointment>
+          </Section>
         </Schedule>
         <Calendar></Calendar>
       </Content>

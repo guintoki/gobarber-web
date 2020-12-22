@@ -1,6 +1,6 @@
 /* eslint-disable no-use-before-define */
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, waitFor } from '@testing-library/react';
 
 import SignIn from '../../pages/SignIn';
 
@@ -8,15 +8,23 @@ const mockedHistoryPush = jest.fn();
 
 jest.mock('react-router-dom', () => {
   return {
-    useHistory: jest.fn().mockReturnValue({
+    useHistory: () => ({
       push: mockedHistoryPush,
     }),
     Link: ({ children }: { children: React.ReactNode }) => children,
   };
 });
 
+jest.mock('../../hooks/Auth.tsx', () => {
+  return {
+    useAuth: () => ({
+      signIn: jest.fn(),
+    }),
+  };
+});
+
 describe('SignIn Page', () => {
-  it('should be able to signin', () => {
+  it('should be able to signin', async () => {
     const { getByPlaceholderText, getByText } = render(<SignIn />);
 
     const emailField = getByPlaceholderText('E-mail');
@@ -30,6 +38,8 @@ describe('SignIn Page', () => {
 
     fireEvent.click(buttonElement);
 
-    expect(mockedHistoryPush).toHaveBeenCalledWith('/dashboard');
+    await waitFor(() => {
+      expect(mockedHistoryPush).toHaveBeenCalledWith('/dashboard');
+    });
   });
 });

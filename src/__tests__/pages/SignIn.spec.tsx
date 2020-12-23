@@ -5,6 +5,9 @@ import { render, fireEvent, waitFor } from '@testing-library/react';
 import SignIn from '../../pages/SignIn';
 
 const mockedHistoryPush = jest.fn();
+const mockedSignIn = jest.fn();
+
+const mockedAddToast = jest.fn();
 
 jest.mock('react-router-dom', () => {
   return {
@@ -23,7 +26,16 @@ jest.mock('../../hooks/Auth.tsx', () => {
   };
 });
 
+jest.mock('../../hooks/Toast.tsx', () => {
+  return {
+    useToast: () => ({
+      addToast: mockedAddToast,
+    }),
+  };
+});
+
 describe('SignIn Page', () => {
+  beforeEach(() => mockedHistoryPush.mockClear());
   it('should be able to signin', async () => {
     const { getByPlaceholderText, getByText } = render(<SignIn />);
 
@@ -42,4 +54,50 @@ describe('SignIn Page', () => {
       expect(mockedHistoryPush).toHaveBeenCalledWith('/dashboard');
     });
   });
+
+  it('should not be able to signin with a invalid email', async () => {
+    const { getByPlaceholderText, getByText } = render(<SignIn />);
+
+    const emailField = getByPlaceholderText('E-mail');
+    const passwordField = getByPlaceholderText('Senha');
+    const buttonElement = getByText('Entrar');
+
+    fireEvent.change(emailField, {
+      target: { value: 'invalid mail' },
+    });
+    fireEvent.change(passwordField, { target: { value: '123456' } });
+
+    fireEvent.click(buttonElement);
+
+    await waitFor(() => {
+      expect(mockedHistoryPush).not.toHaveBeenCalled();
+    });
+  });
+
+  // it('should display a error with login failed', async () => {
+  //   mockedSignIn.mockImplementation(() => {
+  //     throw new Error();
+  //   });
+
+  //   const { getByPlaceholderText, getByText } = render(<SignIn />);
+
+  //   const emailField = getByPlaceholderText('E-mail');
+  //   const passwordField = getByPlaceholderText('Senha');
+  //   const buttonElement = getByText('Entrar');
+
+  //   fireEvent.change(emailField, {
+  //     target: { value: 'guilherme@guintoki.com' },
+  //   });
+  //   fireEvent.change(passwordField, { target: { value: '123456' } });
+
+  //   fireEvent.click(buttonElement);
+
+  //   await waitFor(() => {
+  //     expect(mockedAddToast).toHaveBeenCalledWith(
+  //       expect.objectContaining({
+  //         type: 'error',
+  //       }),
+  //     );
+  //   });
+  // });
 });

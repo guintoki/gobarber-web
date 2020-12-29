@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react-hooks';
 import MockAdapter from 'axios-mock-adapter';
 import { AuthProvider, useAuth } from '../../hooks/Auth';
 import api from '../../services/api';
@@ -63,5 +63,59 @@ describe('Auth hooks', () => {
     });
 
     expect(result.current.user.email).toEqual('guilherme@guintoki.com');
+  });
+
+  it('should be able to signOut', async () => {
+    jest.spyOn(Storage.prototype, 'getItem').mockImplementation(key => {
+      switch (key) {
+        case '@Gobarber:token':
+          return 'token123';
+        case '@Gobarber:user':
+          return JSON.stringify({
+            id: 'user123',
+            name: 'gui',
+            email: 'guilherme@guintoki.com',
+          });
+        default:
+          return null;
+      }
+    });
+    const removeItemSpy = jest.spyOn(Storage.prototype, 'removeItem');
+
+    const { result } = renderHook(() => useAuth(), {
+      wrapper: AuthProvider,
+    });
+    act(() => {
+      result.current.signOut();
+    });
+
+    expect(removeItemSpy).toHaveBeenCalledTimes(2);
+    expect(result.current.user).toBeUndefined();
+  });
+
+  it('should be able to update user data', async () => {
+    const setItemSpy = jest.spyOn(Storage.prototype, 'setItem');
+
+    const { result } = renderHook(() => useAuth(), {
+      wrapper: AuthProvider,
+    });
+
+    const user = {
+      id: 'user123',
+      name: 'gui',
+      email: 'guilherme@guintoki.com',
+      avatar_url: 'imageTest',
+    };
+
+    act(() => {
+      result.current.updateUser(user);
+    });
+
+    expect(setItemSpy).toHaveBeenCalledWith(
+      '@Gobarber:user',
+      JSON.stringify(user),
+    );
+
+    expect(result.current.user).toEqual(user);
   });
 });

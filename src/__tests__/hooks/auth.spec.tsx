@@ -41,4 +41,27 @@ describe('Auth hooks', () => {
 
     expect(result.current.user.email).toEqual('guilherme@guintoki.com');
   });
+
+  it('should restore saved data from storage when auth inits', () => {
+    jest.spyOn(Storage.prototype, 'getItem').mockImplementation(key => {
+      switch (key) {
+        case '@Gobarber:token':
+          return 'token123';
+        case '@Gobarber:user':
+          return JSON.stringify({
+            id: 'user123',
+            name: 'gui',
+            email: 'guilherme@guintoki.com',
+          });
+        default:
+          return null;
+      }
+    });
+
+    const { result } = renderHook(() => useAuth(), {
+      wrapper: AuthProvider,
+    });
+
+    expect(result.current.user.email).toEqual('guilherme@guintoki.com');
+  });
 });
